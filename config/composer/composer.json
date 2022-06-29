@@ -1,0 +1,9 @@
+{
+  "config": {},
+  "repositories": [
+    {
+      "type": "path",
+      "url": "/home/docker/packages/**/*"
+    }
+  ]
+}
