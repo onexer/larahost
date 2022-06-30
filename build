@@ -36,3 +36,6 @@ echo "building: larahost:$TagName"
 docker build --build-arg DevelopmentBuild=$DevelopmentMode --build-arg PHP_VERSION=$PHP_VERSION -t larahost:$TagName .
 docker image tag larahost:$TagName humaid/larahost:$TagName
 docker image push humaid/larahost:$TagName
+
+#docker build --build-arg DevelopmentBuild=true --build-arg PHP_VERSION=8.1 -t larahost:8.1-dev .
+#docker image tag larahost:8.1-dev humaid/larahost:8.1-dev

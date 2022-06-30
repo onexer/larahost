@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+: "${PGID:=1337}"
+: "${PUID:=1337}"
+
+if [ $# -gt 0 ];then
+    exec gosu $PUID "$@"
+else
+  if [ "$PUID" -ne 1337 ]; then
+    usermod -u $PUID docker
+  fi
+
+  if [ "$PGID" -ne 1337 ]; then
+    groupmod -g $PGID docker
+  fi
+
+  chown docker:docker /home/docker
+  chown docker:docker /home/docker/*
+  chown -R docker:docker /home/docker/.*
+
+  crontab /etc/cron.d/docker
+  cron
+  service php8.0-fpm start
+  service supervisor start
+  nginx -c /etc/nginx/nginx.conf
+#  tail -f /dev/null
+fi

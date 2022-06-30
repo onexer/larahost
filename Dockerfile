@@ -33,6 +33,8 @@ RUN ACCEPT_EULA=Y apt-get install -y msodbcsql18 && ACCEPT_EULA=Y apt-get instal
 RUN add-apt-repository ppa:ondrej/php -y
 RUN apt-get update
 RUN apt-get install php$PHP_VERSION php$PHP_VERSION-dev php$PHP_VERSION-cli php$PHP_VERSION-fpm php$PHP_VERSION-xml -y --allow-unauthenticated
+RUN if [ "$DevelopmentBuild" = "true" ] ; then pecl install xdebug; fi
+
 RUN apt-get install -y  \
     php$PHP_VERSION-pgsql php$PHP_VERSION-sqlite3  \
     php$PHP_VERSION-gd php$PHP_VERSION-imagick php$PHP_VERSION-curl \
@@ -91,14 +93,14 @@ COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY config/nginx/docker.conf /etc/nginx/conf.d/docker.conf
 COPY config/nginx/index.php /home/docker/www/public/index.php
 COPY config/composer/composer.json /home/docker/.config/composer/config.json
-
+COPY config/php/90-debug.ini /etc/php/$PHP_VERSION/fpm/conf.d/90-debug.ini
 
 # crontab
 RUN echo "* * * * * docker cd /home/docker/www && php artisan schedule:run >> /dev/null 2>&1" > /etc/cron.d/docker
 RUN chmod 0644 /etc/cron.d/docker
 
 # copy and change start script
-COPY config/start-container /usr/local/bin/start-container
+COPY config/scripts/start-container-$PHP_VERSION /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
 
 ENTRYPOINT ["start-container"]
