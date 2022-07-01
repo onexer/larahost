@@ -17,7 +17,6 @@ else
   chown docker:docker /home/docker
   chown docker:docker /home/docker/*
   chown -R docker:docker /home/docker/.*
-
   crontab /etc/cron.d/docker
   cron
   service php8.1-fpm start

@@ -2,9 +2,7 @@
 
 
 PHP_VERSION="8.1"
-DevelopmentMode=false
 DockerName="larahost"
-TagName="8.1"
 
 while [ -n "$1" ]; do
   case "$1" in
@@ -17,25 +15,13 @@ while [ -n "$1" ]; do
   -php7.4)
     PHP_VERSION="7.4"
     ;;
-  -dev)
-    DevelopmentMode=true
-    ;;
   *) echo "$1 is not an option" ;;
   esac
   shift
 done
 
-if [[ "$DevelopmentMode" = "true" ]]; then
-    TagName="${PHP_VERSION}-dev"
-else
-  TagName="${PHP_VERSION}"
-fi
+echo "building: larahost:$PHP_VERSION"
 
-echo "building: larahost:$TagName"
-
-docker build --build-arg DevelopmentBuild=$DevelopmentMode --build-arg PHP_VERSION=$PHP_VERSION -t larahost:$TagName .
-docker image tag larahost:$TagName humaid/larahost:$TagName
-docker image push humaid/larahost:$TagName
-
-#docker build --build-arg DevelopmentBuild=true --build-arg PHP_VERSION=8.1 -t larahost:8.1-dev .
-#docker image tag larahost:8.1-dev humaid/larahost:8.1-dev
+docker build --build-arg PHP_VERSION=$PHP_VERSION -t larahost:$PHP_VERSION .
+docker image tag larahost:$PHP_VERSION humaid/larahost:$PHP_VERSION
+#docker image push humaid/larahost:$PHP_VERSION
